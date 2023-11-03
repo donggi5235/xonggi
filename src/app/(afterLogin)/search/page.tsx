@@ -1,95 +1,48 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import {Metadata} from "next";
+import SearchForm from "@/app/(afterLogin)/_component/SearchForm";
+import style from './search.module.css';
+import React from "react";
+import BackButton from "@/app/(afterLogin)/search/_component/BackButton";
+import {redirect} from "next/navigation";
+import Tab from "@/app/(afterLogin)/search/_component/Tab";
+import SearchResult from "@/app/(afterLogin)/search/_component/SearchResult";
 
-export default function Home() {
+type Props = {
+  params: { id: string }
+  searchParams: { q: string, pf?: string, f?: string }
+}
+
+export async function generateMetadata({params, searchParams}: Props): Promise<Metadata> {
+  return {
+    title: `${searchParams.q} - 검색 / Z`,
+    description: `${searchParams.q} - 검색 / Z`,
+  }
+}
+
+export default async function Search({searchParams}: Props) {
+
+  if (!searchParams.q) {
+    redirect('/explore');
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className={style.main}>
+      {/* <HydrationBoundary state={dehydratedState}> */}
+        <div className={style.searchTop}>
+          <div className={style.searchZone}>
+            <div className={style.buttonZone}>
+              <BackButton/>
+            </div>
+            <div className={style.formZone}>
+              <SearchForm q={searchParams.q}/>
+            </div>
+          </div>
+          <Tab/>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        <div className={style.list}>
+          <SearchResult searchParams={searchParams} />
+        </div>
+      {/* </HydrationBoundary> */}
     </main>
   )
 }
